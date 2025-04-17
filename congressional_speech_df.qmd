@@ -1,0 +1,248 @@
+---
+title: "congressional_speech_df"
+format: html
+editor: visual
+---
+
+```{r}
+# Load library
+library(tidyverse)
+library(dplyr)
+
+#Load data
+speeches_087 <- read_csv("speeches_087.txt")
+speeches_088 <- read_csv("speeches_088.txt")
+speeches_089 <- read_csv("speeches_089.txt")
+speeches_090 <- read_csv("speeches_090.txt")
+speeches_091 <- read_csv("speeches_091.txt")
+speeches_092 <- read_csv("speeches_092.txt")
+speeches_093 <- read_csv("speeches_093.txt")
+speeches_094 <- read_csv("speeches_094.txt")
+speeches_095 <- read_csv("speeches_095.txt")
+speeches_096 <- read_csv("speeches_096.txt")
+speeches_097 <- read_csv("speeches_097.txt")
+```
+
+```{r}
+# wrangle
+# 87
+speeches_087 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_087_1
+
+# Get rid of original column
+speeches_087_1 %>% 
+  select(-`speech_id|speech`) -> speeches_087_1
+
+# Add congress number column 
+speeches_087_1 %>%
+  mutate(congress = 87) -> speeches_087_1
+
+head(speeches_087_1)
+
+# # Aggregate speeches
+# aggregated_speeches_87 <- speeches_087_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+# 
+# # View the result
+# aggregated_speeches_87
+
+#88
+
+speeches_088 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_088_1
+
+# Get rid of original column
+speeches_088_1 %>% 
+  select(-`speech_id|speech`) -> speeches_088_1
+
+# Add congress number column 
+speeches_088_1 %>%
+  mutate(congress = 88) -> speeches_088_1
+
+# # Aggregate speeches
+# aggregated_speeches_88 <- speeches_088_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#89
+
+speeches_089 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_089_1
+
+# Get rid of original column
+speeches_089_1 %>% 
+  select(-`speech_id|speech`) -> speeches_089_1
+
+# Add congress number column 
+speeches_089_1 %>%
+  mutate(congress = 89) -> speeches_089_1
+
+# # Aggregate speeches
+# aggregated_speeches_89 <- speeches_089_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#90
+
+speeches_090 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_090_1
+
+# Get rid of original column
+speeches_090_1 %>% 
+  select(-`speech_id|speech`) -> speeches_090_1
+
+# Add congress number column 
+speeches_090_1 %>%
+  mutate(congress = 90) -> speeches_090_1
+
+# # Aggregate speeches
+# aggregated_speeches_90 <- speeches_090_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#91
+
+speeches_091 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_091_1
+
+# Get rid of original column
+speeches_091_1 %>% 
+  select(-`speech_id|speech`) -> speeches_091_1
+
+# Add congress number column 
+speeches_091_1 %>%
+  mutate(congress = 91) -> speeches_091_1
+
+# # Aggregate speeches
+# aggregated_speeches_91 <- speeches_091_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#92
+
+speeches_092 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_092_1
+
+# Get rid of original column
+speeches_092_1 %>% 
+  select(-`speech_id|speech`) -> speeches_092_1
+
+# Add congress number column 
+speeches_092_1 %>%
+  mutate(congress = 92) -> speeches_092_1
+
+# # Aggregate speeches
+# aggregated_speeches_92 <- speeches_092_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#93
+
+speeches_093 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_093_1
+
+# Get rid of original column
+speeches_093_1 %>% 
+  select(-`speech_id|speech`) -> speeches_093_1
+
+# Add congress number column 
+speeches_093_1 %>%
+  mutate(congress = 93) -> speeches_093_1
+
+# # Aggregate speeches
+# aggregated_speeches_93 <- speeches_093_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#94
+
+speeches_094 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_094_1
+
+# Get rid of original column
+speeches_094_1 %>% 
+  select(-`speech_id|speech`) -> speeches_094_1
+
+# Add congress number column 
+speeches_094_1 %>%
+  mutate(congress = 94) -> speeches_094_1
+
+# # Aggregate speeches
+# aggregated_speeches_94 <- speeches_094_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#95
+
+speeches_095 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_095_1
+
+# Get rid of original column
+speeches_095_1 %>% 
+  select(-`speech_id|speech`) -> speeches_095_1
+
+# Add congress number column 
+speeches_095_1 %>%
+  mutate(congress = 95) -> speeches_095_1
+
+# # Aggregate speeches
+# aggregated_speeches_95 <- speeches_095_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#96
+
+speeches_096 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_096_1
+
+# Get rid of original column
+speeches_096_1 %>% 
+  select(-`speech_id|speech`) -> speeches_096_1
+
+# Add congress number column 
+speeches_096_1 %>%
+  mutate(congress = 96) -> speeches_096_1
+
+# # Aggregate speeches
+# aggregated_speeches_96 <- speeches_096_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+
+#97
+
+speeches_097 %>% 
+  mutate("speech_id" = str_sub(`speech_id|speech`, 1,9)) %>% 
+  mutate("speech" = str_sub(`speech_id|speech`, 11)) -> speeches_097_1
+
+# Get rid of original column
+speeches_097_1 %>% 
+  select(-`speech_id|speech`) -> speeches_097_1
+
+# Add congress number column 
+speeches_097_1 %>%
+  mutate(congress = 97) -> speeches_097_1
+
+# # Aggregate speeches
+# aggregated_speeches_97 <- speeches_097_1 %>%
+#   group_by(congress) %>%
+#   summarise(speech = paste(speech, collapse = " ")) # Combine speeches into one row
+```
+
+```{r}
+# combine and save
+
+rbind(speeches_087_1, speeches_088_1, speeches_089_1, speeches_090_1, speeches_091_1, speeches_092_1, speeches_093_1, speeches_094_1, speeches_095_1, speeches_096_1, speeches_097_1) -> final_df_congressional_speech
+
+write.csv(final_df_congressional_speech, "~/Downloads/df_congressional_speech.csv", row.names = FALSE)
+```
