@@ -1,2 +1,8 @@
 # era-equal-pay
-test
+The Equal Rights Amendment (ERA) is the only amendment authored by one generation, adopted by another, and fully ratified by yet another. This long historical arc notwithstanding, the ERA has yet to be enshrined in the Constitution. Should the ERA be viewed as a failure? Did the fight for the ERA catalyze campaigns that called attention to women’s issues and stimulated legislative action? Through an analysis of congressional speeches from 1962–1982, this thesis measures the ERA’s impact along the dimension of equal pay, a key objective articulated by its original authors. My research suggests that only 10.2% of the 800 speeches about equal pay during this period mention the ERA, contradicting hypotheses suggested by political theorists. Instead, equal pay was more commonly referenced as a strategic argument to bolster support for the ERA. An examination of contemporary ERA ratification debates paradoxically reveals that the amendment’s earlier inadequacy – its failure to sufficiently address how race and class shaped women’s access to equal pay protections – ultimately helped facilitate its reinvention. Remarkably, this reinvention has largely been led by women of color – a group previously marginalized from the ERA movement. By using the fight for a constitutional gender equality provision as a horizon-setting intervention, contemporary ERA advocates have reclaimed the ERA as a living instrument of feminist imagination.
+
+In this repository, you will find:
+1. A .qmd file with code to combine the congressional speech files from 1962 to 1982 after downloading them from Gentzkow et al. 
+2. A .qmd file with code to create the equal pay speeches data set, clean it, and analyze it.
+
+The data used in this project can be downloaded here: https://data.stanford.edu/congress_text
