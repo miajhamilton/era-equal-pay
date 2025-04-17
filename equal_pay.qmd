@@ -1,0 +1,195 @@
+---
+title: "Equal Pay"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+
+# Libraries
+library(tidyverse)
+library(tidytext)
+library(tidymodels)
+library(topicmodels)
+library(textrecipes)
+library(discrim)
+library(naivebayes)
+library(dplyr)
+library(sentimentr)
+library(ggplot2)
+library(tm)
+library(stringr)
+# install.packages("stm")
+library(stm)
+library(quanteda)
+library(tidyverse)
+
+corpus <- read_csv("df_congressional_speech.csv")
+# write.table(corpus, "~/Downloads/df_congressional_speech.txt",
+#               row.names = FALSE)
+
+# Ensure valid UTF-8 encoding for the 'speech' column
+equal_pay$speech <- iconv(equal_pay$speech, from = "latin1", to = "UTF-8", sub = "")
+
+equal_pay_speech <- equal_pay %>% 
+  select(speech)
+
+write.table(equal_pay, "~/Desktop/thesis/equal_pay_speeches_all_columns.txt",
+               row.names = FALSE)
+```
+
+```{r}
+#| label: create equal pay speeches data set
+
+filtered_speeches_final <- corpus %>%
+  filter(str_detect(speech, "(?i)(women\\W+(\\w+\\W+){0,10}?(equal pay|wage gap|fair pay|pay equity|comparable worth|hiring|salary|income)| (equal pay|wage gap|fair pay|pay equity|comparable worth|hiring|salary|income)\\W+(\\w+\\W+){0,10}?women)"))
+
+# Save as CSV and TXT files
+ 
+write.table(filtered_speeches_final, "~/Downloads/filtered_equalpay_speeches.txt",
+              row.names = FALSE)
+write.csv(filtered_speeches_final, "~/Downloads/filtered_equalpay_speeches.csv",
+              row.names = FALSE)
+
+```
+
+```{r}
+#| label: visualizing number of speeches per congress
+
+# Summarize the number of speeches per Congress
+
+speech_counts <- filtered_speeches_final %>%
+  group_by(congress) %>%
+  summarise(speech_count = n())
+
+max(speech_counts) #92nd congress had the highest number of speeches discussing women and equal pay
+
+mean(speech_counts$speech_count) #average of 72 speeches per Congress
+
+# Create a bar graph visualizing number of speeches mentioning equal pay per congress (Figure 5.1)
+graph1 <- ggplot(speech_counts, aes(x = as.factor(congress), y = speech_count)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = 72, color = "red", linetype = "dashed", size = 1) +
+  labs(
+    title = "Number of Speeches by Congressional Session",
+    x = "Congress",
+    y = "Number of Speeches"
+  ) +
+  theme_minimal() 
+```
+
+```{r}
+#| label: sentiment analysis
+
+# Ensure valid UTF-8 encoding for the 'speech' column
+filtered_speeches_final$speech <- iconv(filtered_speeches_final$speech, from = "latin1", to = "UTF-8", sub = "")
+
+filtered_speeches_final$speech <- iconv(filtered_speeches_final$speech, from = "UTF-8", to = "ASCII", sub = "")
+
+# Preprocess text into sentences
+filtered_speeches_final$sentences <- get_sentences(filtered_speeches_final$speech)
+
+# Perform sentiment analysis on sentences
+sentiment_results <- sentiment(filtered_speeches_final$sentences)
+
+# Summarize sentiment scores for each speech by calculating the average sentiment score for each `speech_id`
+sentiment_summary <- sentiment_results %>%
+  group_by(element_id) %>%
+  summarise(sentiment_score = mean(sentiment, na.rm = TRUE))
+
+# Add the sentiment scores back to original df
+filtered_speeches_final <- filtered_speeches_final %>%
+  mutate(sentiment_score = sentiment_summary$sentiment_score[match(row_number(), sentiment_summary$element_id)])
+
+# Visualize
+# Aggregate sentiment scores by Congress
+sentiment_by_congress <- filtered_speeches_final %>%
+  group_by(congress) %>%
+  summarise(avg_sentiment = mean(sentiment_score, na.rm = TRUE))
+
+# Plot average sentiment scores by Congress
+graph2 <- ggplot(sentiment_by_congress, aes(x = as.factor(congress), y = avg_sentiment)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(
+    title = "Average Sentiment by Congressional Session",
+    x = "Congress",
+    y = "Average Sentiment Score"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+#| label: saving df
+
+# Clean data 
+
+custom_stopwords <- tibble(word = c("senator", "president", "bill", "committee", "time", "gentleman", "gentlemen", "gentlewoman", "gentlewomen", "speaker", "speakers", "house", "senate", "congress", "government", "senator", "senators", "yield", "chairman", "united", "federal", "american", "americans", "national", "country", "countries", "u.s.", "u.s", "distinguished", "remarks", "america", "i", "mr. speaker", "madame", "president", "mr"))
+
+# Combine custom stopwords with tidytext stopwords
+all_stopwords <- custom_stopwords %>%
+  bind_rows(stop_words) %>%
+  distinct()  # Ensure no duplicates
+
+# Ensure regex treats punctuation properly and remove stopwords
+filtered_speeches_clean <- equal_pay %>%
+  mutate(speech = as.character(speech),  # Convert to character
+         speech_clean = str_to_lower(speech),  # Convert speech to lowercase
+         speech_clean = str_replace_all(speech_clean, "[[:punct:]]", " "), # Replace punctuation with space
+         speech_clean = str_remove_all(speech_clean,
+                                       paste0("\\b(",
+                                              paste(all_stopwords$word, collapse = "|"),
+                                              ")\\b")),
+         speech_clean = str_squish(speech_clean)) %>%  # Remove extra spaces
+  select(-speech)  # Drop original column
+
+# Save df for analysis in Ant Conc
+ filtered_equalpay_speeches <- filtered_speeches_clean %>%
+    select(speech_clean)
+
+ write.table(filtered_equalpay_speeches, "~/Downloads/filtered_equalpay_speeches.txt",
+              row.names = FALSE,
+              col.names = FALSE)
+ 
+
+```
+
+```{r}
+#| label: lda
+
+# Unnest text
+filtered_speeches_clean %>% 
+  unnest_tokens(word, speech_clean) -> filtered_speeches_clean
+
+# Get frequency count of each word
+filtered_speeches_clean %>%
+  count(word, sort = TRUE) -> count_filtered_speeches
+
+left_join(filtered_speeches_clean, count_filtered_speeches) -> filtered_speeches
+
+# convert to document-term matrix 
+df_dtm <- filtered_speeches %>%
+  cast_dtm(congress, word, n)
+
+# perform lda
+
+speech_lda <- LDA(df_dtm, k = 5, control = list(seed = 1234))
+
+speech_topics <- tidy(speech_lda, matrix = "beta")
+
+# Visualizing most common terms in each topic in this session of Congress 
+speech_top_terms <- speech_topics %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>% 
+  ungroup() %>%
+  arrange(topic, -beta)
+
+speech_top_terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+
+```
